@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import RenderOne from "./components/RenderOne";
 
 const App = () => {
   const [allCountries, setAllCountries] = useState([]);
@@ -40,41 +41,19 @@ const App = () => {
         <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
           <br />
           {filteredCountries.map((country) => (
-            <li key={country.cca2}>{country.name.common}</li>
+            <li key={country.cca2}>
+              {country.name.common}{" "}
+              <button onClick={() => setQuery(country.name.common)}>
+                show
+              </button>
+            </li>
           ))}
         </ul>
       );
     } else if (filteredCountries < 1 && query.length === 0) {
       return <p></p>;
     } else if (filteredCountries.length === 1) {
-      const country = filteredCountries[0];
-      return (
-        <div>
-          <h2>{country.name.common}</h2>
-          <p>
-            Capital: {country.capital}
-            <br />
-            Area: {country.area}
-          </p>
-          <h3>Languages:</h3>
-          <ul>
-            {country.languages && Object.keys(country.languages).length > 0 ? (
-              Object.values(country.languages).map((language) => (
-                <li key={language}>{language}</li>
-              ))
-            ) : (
-              <li>Unspecified</li>
-            )}
-          </ul>
-          {country.flags.png && (
-            <img
-              src={country.flags.png}
-              alt={`Flag of ${country.name.common}`}
-              width="200"
-            />
-          )}
-        </div>
-      );
+      return <RenderOne filteredCountries={filteredCountries} />;
     } else if (filteredCountries.length > 10) {
       return <p>Too many matches, specify another filter.</p>;
     } else if (filteredCountries.length < 1 && query.length > 0) {
