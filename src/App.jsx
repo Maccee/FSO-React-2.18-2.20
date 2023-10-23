@@ -44,6 +44,8 @@ const App = () => {
           ))}
         </ul>
       );
+    } else if (filteredCountries < 1 && query.length === 0) {
+      return <p></p>;
     } else if (filteredCountries.length === 1) {
       const country = filteredCountries[0];
       return (
@@ -56,26 +58,38 @@ const App = () => {
           </p>
           <h3>Languages:</h3>
           <ul>
-            {Object.values(country.languages).map((language) => (
-              <li key={language}>{language}</li>
-            ))}
+            {country.languages && Object.keys(country.languages).length > 0 ? (
+              Object.values(country.languages).map((language) => (
+                <li key={language}>{language}</li>
+              ))
+            ) : (
+              <li>Unspecified</li>
+            )}
           </ul>
-          <img
-            src={country.flags.png}
-            alt={`Flag of ${country.name.common}`}
-            width="200"
-          />
+          {country.flags.png && (
+            <img
+              src={country.flags.png}
+              alt={`Flag of ${country.name.common}`}
+              width="200"
+            />
+          )}
         </div>
       );
     } else if (filteredCountries.length > 10) {
       return <p>Too many matches, specify another filter.</p>;
+    } else if (filteredCountries.length < 1 && query.length > 0) {
+      return <p>No countries found.</p>;
     }
   };
 
   return (
     <div>
       <p>Find countries...</p>
-      <input value={query} onChange={handleInputChange} />
+      <input
+        value={query}
+        onChange={handleInputChange}
+        placeholder="start typing..."
+      />
       {renderResults()}
     </div>
   );
