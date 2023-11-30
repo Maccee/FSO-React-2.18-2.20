@@ -10,8 +10,22 @@ const RenderOne = ({ filteredCountries }) => {
       fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&appid=${api_key}&units=metric`
       )
-        .then((response) => response.json())
-        .then((data) => setWeatherData(data));
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(response.status);
+          }
+          return response.json();
+        })
+        .then((data) => setWeatherData(data))
+        .catch((error) => {
+          if (error.message === "401") {
+            alert(
+              "Unauthorized access. Please ensure your API key is correctly set in the .env file."
+            );
+          } else {
+            console.error("Fetch error:", error);
+          }
+        });
     }
   }, [country.capital]);
 
